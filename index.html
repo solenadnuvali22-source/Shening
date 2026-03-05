@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ICT-TLE Educational Game</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #0f4c81, #1e90ff);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    margin:0;
+}
+
+.container{
+    background:white;
+    width:650px;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.3);
+    text-align:center;
+}
+
+h1{
+    color:#0f4c81;
+}
+
+button{
+    background:#1e90ff;
+    color:white;
+    border:none;
+    padding:10px 15px;
+    border-radius:8px;
+    cursor:pointer;
+    margin:5px;
+}
+
+button:hover{
+    background:#0f4c81;
+}
+
+.card{
+    border:2px solid #1e90ff;
+    padding:20px;
+    margin:20px 0;
+    border-radius:10px;
+    min-height:80px;
+    font-size:18px;
+}
+
+.hidden{
+    display:none;
+}
+
+.quiz-option{
+    display:block;
+    margin:8px 0;
+    padding:8px;
+    border-radius:6px;
+    background:#e6f2ff;
+    cursor:pointer;
+}
+
+.quiz-option:hover{
+    background:#cce6ff;
+}
+
+.score{
+    font-weight:bold;
+    color:#0f4c81;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h1>ICT - TLE Learning Game</h1>
+
+<button onclick="showFlashcards()">Flashcards</button>
+<button onclick="showQuiz()">Quiz</button>
+
+<!-- FLASHCARDS SECTION -->
+<div id="flashcards" class="hidden">
+    <h2>Flashcards</h2>
+    <div class="card" id="cardText"></div>
+    <button onclick="flipCard()">Flip</button>
+    <button onclick="nextCard()">Next</button>
+</div>
+
+<!-- QUIZ SECTION -->
+<div id="quiz" class="hidden">
+    <h2>Quiz Time!</h2>
+    <div id="quizQuestion"></div>
+    <div id="quizOptions"></div>
+    <div class="score" id="score"></div>
+    <button onclick="nextQuestion()">Next Question</button>
+</div>
+
+</div>
+
+<script>
+
+// FLASHCARDS DATA
+const flashcards = [
+    {question:"What does ICT stand for?", answer:"Information and Communication Technology"},
+    {question:"What is hardware?", answer:"Physical components of a computer like keyboard, mouse, monitor"},
+    {question:"What is software?", answer:"Programs and applications that run on a computer"},
+    {question:"What is an operating system?", answer:"Software that manages computer hardware and software resources"},
+    {question:"Give an example of an input device.", answer:"Keyboard, Mouse, Scanner"}
+];
+
+let currentCard = 0;
+let showingAnswer = false;
+
+function showFlashcards(){
+    document.getElementById("flashcards").classList.remove("hidden");
+    document.getElementById("quiz").classList.add("hidden");
+    loadCard();
+}
+
+function loadCard(){
+    document.getElementById("cardText").innerText = flashcards[currentCard].question;
+    showingAnswer = false;
+}
+
+function flipCard(){
+    if(!showingAnswer){
+        document.getElementById("cardText").innerText = flashcards[currentCard].answer;
+        showingAnswer = true;
+    } else {
+        loadCard();
+    }
+}
+
+function nextCard(){
+    currentCard = (currentCard + 1) % flashcards.length;
+    loadCard();
+}
+
+// QUIZ DATA
+const quiz = [
+    {
+        question:"What does ICT stand for?",
+        options:["Information Computer Technology","Information and Communication Technology","Internet Communication Tool"],
+        answer:"Information and Communication Technology"
+    },
+    {
+        question:"Which of the following is hardware?",
+        options:["Microsoft Word","Keyboard","Windows 10"],
+        answer:"Keyboard"
+    },
+    {
+        question:"Which is an operating system?",
+        options:["Windows 10","Mouse","Printer"],
+        answer:"Windows 10"
+    },
+    {
+        question:"Which is an input device?",
+        options:["Monitor","Speaker","Mouse"],
+        answer:"Mouse"
+    }
+];
+
+let currentQuestion = 0;
+let score = 0;
+
+function showQuiz(){
+    document.getElementById("quiz").classList.remove("hidden");
+    document.getElementById("flashcards").classList.add("hidden");
+    loadQuestion();
+}
+
+function loadQuestion(){
+    const question = quiz[currentQuestion];
+    document.getElementById("quizQuestion").innerText = question.question;
+    const optionsDiv = document.getElementById("quizOptions");
+    optionsDiv.innerHTML = "";
+    question.options.forEach(option=>{
+        const btn = document.createElement("div");
+        btn.innerText = option;
+        btn.classList.add("quiz-option");
+        btn.onclick = ()=>checkAnswer(option);
+        optionsDiv.appendChild(btn);
+    });
+}
+
+function checkAnswer(selected){
+    if(selected === quiz[currentQuestion].answer){
+        score++;
+        alert("Correct!");
+    } else {
+        alert("Wrong! Correct answer: " + quiz[currentQuestion].answer);
+    }
+}
+
+function nextQuestion(){
+    currentQuestion++;
+    if(currentQuestion < quiz.length){
+        loadQuestion();
+    } else {
+        document.getElementById("quizQuestion").innerText = "Quiz Finished!";
+        document.getElementById("quizOptions").innerHTML = "";
+        document.getElementById("score").innerText = "Your Score: " + score + "/" + quiz.length;
+    }
+}
+
+</script>
+
+</body>
+</html>
